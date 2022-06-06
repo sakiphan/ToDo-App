@@ -4,7 +4,8 @@ const form = document.querySelector('form');
 const input = document.querySelector('#txtTaskName');
 const btnDeleteAll = document.querySelector('#btnDeleteAll');
 const taskList = document.querySelector('#task-list');
-let items;
+const dataKey = 'items';
+let items = [];
 
 // load items
 loadItems();
@@ -31,31 +32,29 @@ function loadItems() {
 }
 
 // get items from Local Storage
-function getItemsFromLS(){
-    if(localStorage.getItem('items')===null){
-        items = [];
-    }else{
-        items = JSON.parse(localStorage.getItem('items'));
-    }
-    return items;
+function getItemsFromLS() {
+    if (localStorage.getItem(dataKey))
+        return JSON.parse(localStorage.getItem(dataKey));
+
+    return [];
 }
 
 // set item to Local Storage
-function setItemToLS(text){
+function setItemToLS(text) {
     items = getItemsFromLS();
     items.push(text);
-    localStorage.setItem('items',JSON.stringify(items));
+    localStorage.setItem(dataKey, JSON.stringify(items));
 }
 
 // delete item from LS
-function deleteItemFromLS(text){
+function deleteItemFromLS(text) {
     items = getItemsFromLS();
-    items.forEach(function(item,index){
-        if(item === text){
-            items.splice(index,1);   
+    items.forEach(function (item, index) {
+        if (item === text) {
+            items.splice(index, 1);
         }
     });
-    localStorage.setItem('items',JSON.stringify(items));
+    localStorage.setItem(dataKey, JSON.stringify(items));
 }
 
 
@@ -81,8 +80,9 @@ function createItem(text) {
 
 // add new item
 function addNewItem(e) {
-    if (input.value === '') {
-        alert('add new item');
+    if (!input.value) {
+        alert('Please type new task to add..');
+        return;
     }
 
     // create item
@@ -116,7 +116,7 @@ function deleteAllItems(e) {
 
     if (confirm('are you sure ?')) {
         // taskList.innerHTML='';
-        while(taskList.firstChild){
+        while (taskList.firstChild) {
             taskList.removeChild(taskList.firstChild);
         }
         localStorage.clear();
